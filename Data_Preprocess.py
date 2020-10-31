@@ -21,7 +21,7 @@ class Data_Preprocess():
     def read_data(self, path):
         text = []
         label = []
-        with open(path) as data_file:
+        with open(path,encoding = 'utf') as data_file:
             data = csv.reader(data_file, delimiter='\t', quoting=csv.QUOTE_NONE)
             next(data)
             for row in data:
