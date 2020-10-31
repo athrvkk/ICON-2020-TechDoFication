@@ -90,6 +90,56 @@ def label_encoder(y_train, y_test):
     return y_train, y_test
 
 
+# ----------------------------------------- Get Word Embeddings -----------------------------------------
+
+def get_embedding_matrix(embedding_path, vocab):
+    cnt = 0
+    vocab_words = set(vocab.keys())
+    embedding_matrix = np.zeros((len(vocab), 300))
+    embedding_file = open(embedding_path, 'r')
+    for row in embedding_file:
+        row = row.split()
+        word = row[0].strip()
+        if word in vocab_words:
+            wv = np.asarray(row[1:], dtype='float32')
+            if len(wv) == 300:
+                embedding_matrix[vocab[word]] = wv
+                cnt = cnt + 1
+    print(cnt)
+    embedding_file.close()
+    return embedding_matrix
+
+
+# ----------------------------------------- Get Sentence Embeddings -----------------------------------------
+
+
+def get_sentence_embedding(embedding_matrix, corpus, option='bow'):
+    all_sentence_embeddings = []
+    if option == 'bow':
+        for row in corpus:
+            sentence_embedding = np.zeros(300)
+            for loc, value in list(zip(row.indices, row.data)):
+                sentence_embedding = sentence_embedding + value*embedding_matrix[loc]
+            if row.data.shape[0] != 0:
+                sentence_embedding = sentence_embedding/row.data.shape[0]
+            all_sentence_embeddings.append(sentence_embedding)
+        all_sentence_embeddings = np.array([np.array(x) for x in all_sentence_embeddings])
+        return all_sentence_embeddings
+        
+    elif option == 'tfidf':
+        for row in corpus:
+            sentence_embedding = np.zeros(300)
+            for loc, value in list(zip(row.indices, row.data)):
+                sentence_embedding = sentence_embedding + value*embedding_matrix[loc]
+            all_sentence_embeddings.append(sentence_embedding)
+        all_sentence_embeddings = np.array([np.array(x) for x in all_sentence_embeddings])
+        return all_sentence_embeddings
+    
+    else:
+        print("Invalid option")
+        return text
+    
+    
 # ----------------------------------------- Get unigrams -----------------------------------------
 
 def get_unigrams(corpus):  
