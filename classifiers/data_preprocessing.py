@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
+import re
 import csv
 import regex
 from string import punctuation
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.preprocessing import LabelEncoder
 from nltk.util import ngrams
+from nltk.stem import WordNetLemmatizer
 from collections import Counter
 
 
@@ -13,26 +15,45 @@ from collections import Counter
 # ------------------------------------------ Read Data ------------------------------------------
 
 def read_data(path):
-    text = []
-    label = []
-    with open(path, encoding='utf-8') as data_file:
-        data = csv.reader(data_file, delimiter='\t', quoting=csv.QUOTE_NONE)
-        next(data)
-        for row in data:
-            text.append(row[0])
-            label.append(row[1])
-    df = pd.DataFrame(list(zip(text, label)), columns=['text', 'label'])
-    data_file.close()
-    return df
+    return pd.read_csv(path)
 
 
 # ------------------------------------------ Preprocess Data ------------------------------------------
 
 def preprocess_data(text):
-    text = " ".join([word for word in text.split() if word not in punctuation])
-    return text.strip()
+    lemmatizer = WordNetLemmatizer()
+    with open("../marathi-stopwords.txt", "r", encoding='utf-8') as file:
+        stopword_list = file.read()
+        stopword_list = set(stopword_list.split())
+    file.close()
+    
+    # Cleaning the urls
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
 
-        
+    # Cleaning the html elements
+    text = re.sub(r'<.*?>', '', text)
+
+    # Removing the punctuations
+    #text = re.sub('\W*', '', text)
+    text = re.sub('[!#?,.:";-@#$%^&*_~<>()]', ' ', text)
+
+    # Replacing numbers with #s
+    text = re.sub('[0-9]+', '[DIGIT]', text)  
+
+    # Removing stop words
+    text = [word for word in text.split() if word not in stopword_list]
+
+    # Lemmatize english words
+    temp = ""
+    for word in text:
+        if re.match('[a-zA-Z]+', word): 
+            word = word.lower()
+            x = lemmatizer.lemmatize(word)
+        temp = temp + word + " "
+
+    return temp.strip() 
+    
+    
 # ----------------------------------------- BOW Vectorizer -----------------------------------------
 
 def custom_analyzer(text):
@@ -42,8 +63,8 @@ def custom_analyzer(text):
         yield w
 
         
-def bow_vectorize(x_train, x_val):
-        bow_vectorizer = CountVectorizer(analyzer=custom_analyzer)
+def bow_vectorize(x_train, x_val, min_df):
+        bow_vectorizer = CountVectorizer(analyzer=custom_analyzer, min_df=min_df)
         bow_vectorizer.fit(x_train)
         bow_x_train = bow_vectorizer.transform(x_train)
         bow_x_val = bow_vectorizer.transform(x_val)
@@ -52,8 +73,8 @@ def bow_vectorize(x_train, x_val):
 
 # ------------------------------------- bi/trigram TF-IDF Vectorizer -----------------------------------
 
-def tfidf_vectorize(x_train, x_val):
-    tfidf_vectorizer = TfidfVectorizer(analyzer=custom_analyzer)
+def tfidf_vectorize(x_train, x_val, min_df):
+    tfidf_vectorizer = TfidfVectorizer(analyzer=custom_analyzer, min_df=min_df)
     tfidf_vectorizer.fit(x_train)
     tfidf_x_train = tfidf_vectorizer.transform(x_train)
     tfidf_x_val = tfidf_vectorizer.transform(x_val)
@@ -62,8 +83,8 @@ def tfidf_vectorize(x_train, x_val):
 
 # ------------------------------------- unigram TF-IDF Vectorizer -----------------------------------
 
-def n_gram_tfidf_vectorize(x_train, x_val):
-    n_gram_tfidf_vectorizer = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', ngram_range=(2,3))
+def n_gram_tfidf_vectorize(x_train, x_val, min_df):
+    n_gram_tfidf_vectorizer = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', ngram_range=(2,3), min_df=min_df)
     n_gram_tfidf_vectorizer.fit(x_train)
     n_gram_tfidf_x_train = n_gram_tfidf_vectorizer.transform(x_train)
     n_gram_tfidf_x_val = n_gram_tfidf_vectorizer.transform(x_val)
