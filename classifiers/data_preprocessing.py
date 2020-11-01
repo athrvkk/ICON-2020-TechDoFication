@@ -5,6 +5,8 @@ import csv
 import regex
 from string import punctuation
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from nltk.util import ngrams
 from nltk.stem import WordNetLemmatizer
@@ -37,9 +39,6 @@ def preprocess_data(text):
     #text = re.sub('\W*', '', text)
     text = re.sub('[!#?,.:";-@#$%^&*_~<>()]', ' ', text)
 
-    # Replacing numbers with #s
-    text = re.sub('[0-9]+', '[DIGIT]', text)  
-
     # Removing stop words
     text = [word for word in text.split() if word not in stopword_list]
 
@@ -50,6 +49,9 @@ def preprocess_data(text):
             word = word.lower()
             x = lemmatizer.lemmatize(word)
         temp = temp + word + " "
+
+    # Replacing numbers with #s
+    temp = re.sub('[0-9]+', '[DIGIT]', temp)  
 
     return temp.strip() 
     
@@ -116,7 +118,7 @@ def label_encoder(y_train, y_test):
 def get_embedding_matrix(embedding_path, vocab):
     cnt = 0
     vocab_words = set(vocab.keys())
-    embedding_matrix = np.zeros((len(vocab), 300))
+    embedding_matrix = np.zeros((len(vocab)+1, 300))
     embedding_file = open(embedding_path, 'r')
     for row in embedding_file:
         row = row.split()
@@ -160,7 +162,26 @@ def get_sentence_embedding(embedding_matrix, corpus, option='bow'):
         print("Invalid option")
         return text
     
+
+# ----------------------------------------- tokenizer and pad for neural networks -----------------------------------------
     
+def tokenizer_and_pad_training(x_train, x_val, pad_len, padding_type='post', truncating_type='post'):
+    tokenizer = Tokenizer(oov_token='[OOV]')
+    tokenizer.fit_on_texts(x_train)
+    x_train_padded = tokenizer.texts_to_sequences(x_train)
+    x_val_padded = tokenizer.texts_to_sequences(x_val)
+    
+    x_train_padded = np.asarray(pad_sequences(x_train_padded, 
+                                              padding=padding_type, 
+                                              truncating=truncating_type, 
+                                              maxlen=pad_len))
+    x_val_padded = np.asarray(pad_sequences(x_val_padded, 
+                                            padding=padding_type, 
+                                            truncating=truncating_type, 
+                                            maxlen=pad_len))
+    return tokenizer, x_train_padded, x_val_padded
+
+
 # ----------------------------------------- Get unigrams -----------------------------------------
 
 def get_unigrams(corpus):  
