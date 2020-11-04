@@ -28,7 +28,7 @@ class myCallbacks(tf.keras.callbacks.Callback):
 
 # ------------------------------------------------------ TRAIN DNN --------------------------------------------
 
-def create_model_DNN(input_dim, embedding_dim, embedding_matrix, pad_len, trainable, n1=64, n2=32, kr=None, br=None):
+def create_model_DNN(input_dim, embedding_dim, embedding_matrix, pad_len, trainable=False, n1=64, n2=32, kr=None, br=None):
     Simple = Sequential()
     embedding_layer = Simple.add(
         Embedding(input_dim=input_dim, output_dim=embedding_dim, weights=[embedding_matrix], input_length=pad_len,
