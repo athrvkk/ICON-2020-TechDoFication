@@ -32,7 +32,8 @@ class Preprocess:
             
             special_chars = r'''!()-[]{};:'"\,<>./?@#$%^&*_~'''
             text = str(text)
-            # Lemmatizing English words
+            
+            # initializing Lemmatizer and Stemmer
             lemmatizer = WordNetLemmatizer()
             stemmer = PorterStemmer() 
             
@@ -41,9 +42,6 @@ class Preprocess:
 
             # Cleaning the html elements
             text = re.sub(r'<.*?>', '', text)
-            
-            #Cleaning Special characters
-
             
             # Removing the punctuations
             text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', ' ', text)
