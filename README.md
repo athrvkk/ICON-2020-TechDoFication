@@ -9,6 +9,7 @@ Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning
 |Linear SVC|<p>BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>fasttext embeddings<br>Indic-fasttext embeddings</p>|<p>83.91<br>85.63<br>85.97<br>87.56<br>72.88<br>78.09</p>|<p>0.8282<br>0.8555<br>0.8489<br>0.8649<br>0.7000<br>0.7578</p>|
 
 
+
 ### Deep learning results:
 
 |Model|Input Features|Validation Accuracy|Average F1-Score|
