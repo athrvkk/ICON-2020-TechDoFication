@@ -11,6 +11,8 @@ from sklearn.preprocessing import LabelEncoder
 from nltk.util import ngrams
 from nltk.stem import WordNetLemmatizer
 from collections import Counter
+import unicodedata
+
 
 
 
@@ -20,40 +22,53 @@ def read_data(path):
     return pd.read_csv(path)
 
 
+ # --------------------------------------- Expand concatenations --------------------------------------
+
+    
+    
+    
 # ------------------------------------------ Preprocess Data ------------------------------------------
 
-def preprocess_data(text):
-    lemmatizer = WordNetLemmatizer()
-    with open("../marathi-stopwords.txt", "r", encoding='utf-8') as file:
-        stopword_list = file.read()
-        stopword_list = set(stopword_list.split())
-    file.close()
+def preprocess_data(text, stopword_list):
+    
+    def expand_concatenations(word):
+        if re.match('[a-zA-Z]+', word):
+            for i in range(len(word)):
+                if('DEVANAGARI ' in unicodedata.name(word[i])):
+                    word = word[i:] if( len(word[:i]) < 2 ) else word[:i] + " " + word[i:]
+                    break
+        return(word)
     
     # Cleaning the urls
-    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    text = re.sub(r'https?://\S+|www\.\S+', '', str(text))
 
     # Cleaning the html elements
     text = re.sub(r'<.*?>', '', text)
 
     # Removing the punctuations
-    #text = re.sub('\W*', '', text)
-    text = re.sub('[!#?,.:";-@#$%^&*_~<>()]', ' ', text)
+    text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', ' ', text)
 
     # Removing stop words
     text = [word for word in text.split() if word not in stopword_list]
 
-    # Lemmatize english words
-    temp = ""
-    for word in text:
-        if re.match('[a-zA-Z]+', word): 
-            word = word.lower()
-            x = lemmatizer.lemmatize(word)
-        temp = temp + word + " "
+    # Expanding noisy concatenations (Eg: algorithmआणि  -> algorithm आणि ) 
+    text = [expand_concatenations(word) for word in text]
 
-    # Replacing numbers with #s
-    temp = re.sub('[0-9]+', '[DIGIT]', temp)  
+    preprocessed_text = ""
+    for word in text: 
+        if (re.match('\d+', word)):
+            if(word.isnumeric()):
+                preprocessed_text = preprocessed_text + '<Numeric>' + " "
 
-    return temp.strip() 
+        else:
+            if(re.match('[a-zA-Z]+', word)):
+                word = word.lower()
+                preprocessed_text = preprocessed_text + word + " "
+
+            else:
+                preprocessed_text = preprocessed_text + word + " "
+
+    return preprocessed_text.strip() 
     
     
 # ----------------------------------------- BOW Vectorizer -----------------------------------------
@@ -115,17 +130,17 @@ def label_encoder(y_train, y_test):
 
 # ----------------------------------------- Get Word Embeddings -----------------------------------------
 
-def get_embedding_matrix(embedding_path, vocab):
+def get_embedding_matrix(embedding_path, vocab, embedding_dim):
     cnt = 0
     vocab_words = set(vocab.keys())
-    embedding_matrix = np.zeros((len(vocab)+1, 300))
+    embedding_matrix = np.zeros((len(vocab)+1, embedding_dim))
     embedding_file = open(embedding_path, 'r')
     for row in embedding_file:
         row = row.split()
         word = row[0].strip()
         if word in vocab_words:
             wv = np.asarray(row[1:], dtype='float32')
-            if len(wv) == 300:
+            if len(wv) == embedding_dim:
                 embedding_matrix[vocab[word]] = wv
                 cnt = cnt + 1
     print(cnt)
