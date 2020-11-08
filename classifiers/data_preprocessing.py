@@ -9,10 +9,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from nltk.util import ngrams
-from nltk.stem import WordNetLemmatizer
 from collections import Counter
 import unicodedata
-
 
 
 
@@ -22,53 +20,78 @@ def read_data(path):
     return pd.read_csv(path)
 
 
- # --------------------------------------- Expand concatenations --------------------------------------
 
+# ------------------------------------------ Get Stopwords ------------------------------------------
     
-    
-    
+def get_stopwords(path):
+    file = open(path, "r")
+    stopword_list = []
+    for row in file:
+        row = row.replace("\n", "")
+        stopword_list.append(row)
+    return stopword_list
+        
+        
+        
 # ------------------------------------------ Preprocess Data ------------------------------------------
 
-def preprocess_data(text, stopword_list):
+def preprocess_data(stopword_list, text: str) -> str:
     
-    def expand_concatenations(word):
-        if re.match('[a-zA-Z]+', word):
+    def expand_concatenations(word):            
+        if not re.match('[a-zA-Z]+', word) or re.match('\d+',word):
             for i in range(len(word)):
-                if('DEVANAGARI ' in unicodedata.name(word[i])):
-                    word = word[i:] if( len(word[:i]) < 2 ) else word[:i] + " " + word[i:]
+                if not('DEVANAGARI ' in unicodedata.name(word[i])):
+                    word = word[:i] if( len(word[i:]) < 2 and not word[i:].isnumeric()) else word[:i] + " " + word[i:]
+                    break
+        else:
+            for i in range(len(word)):
+                if ('DEVANAGARI ' in unicodedata.name(word[i])):
+                    word = word[i:] if( len(word[:i]) < 2 and not word[:i].isnumeric() ) else word[:i] + " " + word[i:]
                     break
         return(word)
     
-    # Cleaning the urls
-    text = re.sub(r'https?://\S+|www\.\S+', '', str(text))
+    
+    try:
+        if not(isinstance(text, str)): text = str(text)
 
-    # Cleaning the html elements
-    text = re.sub(r'<.*?>', '', text)
+        #Removing unprintable characters
+        text = ''.join(x for x in text if x.isprintable())
 
-    # Removing the punctuations
-    text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', ' ', text)
+        # Cleaning the urls
+        text = re.sub(r'https?://\S+|www\.\S+', '', text)
 
-    # Removing stop words
-    text = [word for word in text.split() if word not in stopword_list]
+        # Cleaning the html elements
+        text = re.sub(r'<.*?>', '', text)
 
-    # Expanding noisy concatenations (Eg: algorithmआणि  -> algorithm आणि ) 
-    text = [expand_concatenations(word) for word in text]
+        # Removing the punctuations
+        text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
 
-    preprocessed_text = ""
-    for word in text: 
-        if (re.match('\d+', word)):
-            if(word.isnumeric()):
-                preprocessed_text = preprocessed_text + '<Numeric>' + " "
 
-        else:
-            if(re.match('[a-zA-Z]+', word)):
-                word = word.lower()
-                preprocessed_text = preprocessed_text + word + " "
+        # Removing stop words
+        text = ' '.join([word for word in text.split() if word not in stopword_list])
 
+        # Expanding noisy concatenations (Eg: algorithmआणि  -> algorithm आणि ) 
+        text = ' '.join([expand_concatenations(word) for word in text.split()])
+
+        preprocessed_text = ""
+
+        for word in text.split(): 
+            if (re.match('\d+', word)):
+                if(word.isnumeric()):
+                    preprocessed_text = preprocessed_text + '#N' + " "
             else:
-                preprocessed_text = preprocessed_text + word + " "
+                if(re.match('[a-zA-Z]+', word)):
+                    if not len(word) < 2:
+                        preprocessed_text = preprocessed_text + word.lower() + " "
+                else:
+                    preprocessed_text = preprocessed_text + word + " "
 
-    return preprocessed_text.strip() 
+        return preprocessed_text.strip()
+
+    except ValueError as ve:
+        print('Error processing:\t',text)
+        return ''        
+    
     
     
 # ----------------------------------------- BOW Vectorizer -----------------------------------------
@@ -80,6 +103,7 @@ def custom_analyzer(text):
         yield w
 
         
+        
 def bow_vectorize(x_train, x_val, min_df):
         bow_vectorizer = CountVectorizer(analyzer=custom_analyzer, min_df=min_df)
         bow_vectorizer.fit(x_train)
@@ -88,6 +112,7 @@ def bow_vectorize(x_train, x_val, min_df):
         return bow_vectorizer, bow_x_train, bow_x_val
 
 
+    
 # ------------------------------------- bi/trigram TF-IDF Vectorizer -----------------------------------
 
 def tfidf_vectorize(x_train, x_val, min_df):
@@ -96,6 +121,7 @@ def tfidf_vectorize(x_train, x_val, min_df):
     tfidf_x_train = tfidf_vectorizer.transform(x_train)
     tfidf_x_val = tfidf_vectorizer.transform(x_val)
     return tfidf_vectorizer, tfidf_x_train, tfidf_x_val
+
 
 
 # ------------------------------------- unigram TF-IDF Vectorizer -----------------------------------
@@ -108,6 +134,7 @@ def n_gram_tfidf_vectorize(x_train, x_val, min_df):
     return n_gram_tfidf_vectorizer, n_gram_tfidf_x_train, n_gram_tfidf_x_val
 
 
+
 # ---------------------------------- character-level TF-IDF Vectorizer --------------------------------
 
 def char_tfidf_vectorize(x_train, x_val):
@@ -118,6 +145,33 @@ def char_tfidf_vectorize(x_train, x_val):
     return char_tfidf_vectorizer, char_tfidf_x_train, char_tfidf_x_val
 
 
+
+# ----------------------------------------- tokenizing -----------------------------------------
+
+def tokenize_text(x_train, x_val):
+    tokenizer = Tokenizer(oov_token='[OOV]')
+    tokenizer.fit_on_texts(x_train)
+    x_train_tokenzied = tokenizer.texts_to_sequences(x_train)
+    x_val_tokenzied = tokenizer.texts_to_sequences(x_val)
+    return tokenizer, x_train_tokenzied, x_val_tokenzied
+    
+    
+    
+# ----------------------------------------- Pading and Truncating -----------------------------------------
+    
+def pad_text(x_train_tokenzied, x_val_tokenzied, pad_len, padding_type='post', truncating_type='post'):    
+    x_train_padded = np.asarray(pad_sequences(x_train_tokenzied, 
+                                              padding=padding_type, 
+                                              truncating=truncating_type, 
+                                              maxlen=pad_len))
+    x_val_padded = np.asarray(pad_sequences(x_val_tokenzied, 
+                                            padding=padding_type, 
+                                            truncating=truncating_type, 
+                                            maxlen=pad_len))
+    return x_train_padded, x_val_padded
+
+
+
 # ----------------------------------- Integer encoding labels ------------------------------------
 
 def label_encoder(y_train, y_test):
@@ -126,6 +180,7 @@ def label_encoder(y_train, y_test):
     y_train = le.transform(y_train)
     y_test = le.transform(y_test)
     return y_train, y_test
+
 
 
 # ----------------------------------------- Get Word Embeddings -----------------------------------------
@@ -148,8 +203,8 @@ def get_embedding_matrix(embedding_path, vocab, embedding_dim):
     return embedding_matrix
 
 
-# ----------------------------------------- Get Sentence Embeddings -----------------------------------------
 
+# ----------------------------------------- Get Sentence Embeddings -----------------------------------------
 
 def get_sentence_embedding(embedding_matrix, corpus, option='bow'):
     all_sentence_embeddings = []
@@ -175,57 +230,17 @@ def get_sentence_embedding(embedding_matrix, corpus, option='bow'):
     
     else:
         print("Invalid option")
-        return text
-    
+        return text    
 
-# ----------------------------------------- tokenizer and pad for neural networks -----------------------------------------
     
-def tokenizer_and_pad_training(x_train, x_val, pad_len, padding_type='post', truncating_type='post'):
-    tokenizer = Tokenizer(oov_token='[OOV]')
-    tokenizer.fit_on_texts(x_train)
-    x_train_padded = tokenizer.texts_to_sequences(x_train)
-    x_val_padded = tokenizer.texts_to_sequences(x_val)
-    
-    x_train_padded = np.asarray(pad_sequences(x_train_padded, 
-                                              padding=padding_type, 
-                                              truncating=truncating_type, 
-                                              maxlen=pad_len))
-    x_val_padded = np.asarray(pad_sequences(x_val_padded, 
-                                            padding=padding_type, 
-                                            truncating=truncating_type, 
-                                            maxlen=pad_len))
-    return tokenizer, x_train_padded, x_val_padded
-
 
 # ----------------------------------------- Get unigrams -----------------------------------------
 
-def get_unigrams(corpus):  
+def get_unigrams(corpus):
+    unigram_freq = {}
     corpus = " ".join(x for x in corpus)
     corpus = [word for word in corpus.split() if word not in punctuation]
     unigrams = ngrams(corpus, 1)
-    unigram_freq = Counter(unigrams)       
+    for x in Counter(unigrams).most_common():
+        unigram_freq[x[0][0]] = x[1]
     return unigram_freq
-
-
- # ------------------------------------- Convert grams to dict ------------------------------------
-
-def counter_to_dict(counter):
-    wordcloud_dict = {}
-    gram = len(counter.most_common(1)[0][0])
-
-    if gram == 1:
-        for x in counter.most_common():
-            wordcloud_dict[x[0][0]] = x[1]
-
-    elif gram == 2:
-        for x in counter.most_common():
-            wordcloud_dict[x[0][0]+" "+x[0][1]] = round(x[1], 2)
-
-    else:
-        for x in counter.most_common():
-            wordcloud_dict[x[0][0]+" "+x[0][1]+" "+x[0][2]] = round(x[1], 2)
-
-    deleted = [key for key in wordcloud_dict if wordcloud_dict[key] < 2]
-    for key in deleted: del(wordcloud_dict[key])
-
-    return wordcloud_dict
