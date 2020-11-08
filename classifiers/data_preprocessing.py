@@ -189,7 +189,7 @@ def get_embedding_matrix(embedding_path, vocab, embedding_dim):
     cnt = 0
     vocab_words = set(vocab.keys())
     embedding_matrix = np.zeros((len(vocab)+1, embedding_dim))
-    embedding_file = open(embedding_path, 'r')
+    embedding_file = open(embedding_path, 'r',encoding = 'utf8')
     for row in embedding_file:
         row = row.split()
         word = row[0].strip()
