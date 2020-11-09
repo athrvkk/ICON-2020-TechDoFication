@@ -5,8 +5,8 @@ Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning
 
 |Model|Input Features|Validation Accuracy|Average F1-Score|
 |:-------|:--------|:-------|:--------|
-|Multinomial Naive Bayes|<p>BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>fasttext embeddings<br>Indic-fasttext embeddings</p>|<p>86.29<br>74.92<br>65.13<br>77.53<br>-<br>-</p>|<p>0.8516<br>0.7431<br>0.5675<br>0.7440<br>-<br>-</p>|
-|Linear SVC|<p>BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>fasttext embeddings<br>Indic-fasttext embeddings</p>|<p>83.91<br>85.63<br>85.97<br>87.56<br>72.88<br>78.09</p>|<p>0.8282<br>0.8555<br>0.8489<br>0.8649<br>0.7000<br>0.7578</p>|
+|Multinomial Naive Bayes|<p>BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>fasttext embeddings<br>Indic-fasttext embeddings</p>|<p>86.21<br>78.49<br>65.02<br>77.48<br>-<br>-</p>|<p>0.8508<br>0.7445<br>0.5657<br>0.7448<br>-<br>-</p>|
+|Linear SVC|<p>BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>Indic-fasttext embeddings<br>Domain-Specific Embeddigns</p>|<p>83.99<br>86.69<br>86.03<br>86.93<br>77.75<br>77.35<br>84.57<br>84.94</p>|<p>0.8292<br>0.8577<br>0.8506<br>0.8594<br>0.7539<br>0.7434<br>0.8316<br>83.77</p>|
 
 
 
