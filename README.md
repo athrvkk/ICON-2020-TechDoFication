@@ -14,6 +14,6 @@ Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning
 
 |Model|Input Features|Validation Accuracy|Average F1-Score|
 |:-------|:--------|:-------|:--------|
-|FFNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings</p>|<p>59.39<br>71.50<br>76.42</p>|<p>0.4475<br>0.6929<br>0.7462</p>|
-|CNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings</p>|<p>72.59<br>77.08<br>84.20</p>|<p>0.7024<br>0.7514<br>0.8312</p>|
-|Bi-LSTM|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings</p>|<p>80.00<br>83.12<br>87.30</p>|<p>0.7870<br>0.8215<br>0.8629</p>|
+|FFNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>59.39<br>71.50<br>76.42<br>76.11</p>|<p>0.4475<br>0.6929<br>0.7462<br>0.7454</p>|
+|CNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>72.59<br>77.08<br>84.20<br>86.66</p>|<p>0.7024<br>0.7514<br>0.8312<br>0.8532</p>|
+|Bi-LSTM|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>80.00<br>83.12<br>87.30<br>89.31</p>|<p>0.7870<br>0.8215<br>0.8629<br>0.8842</p>|
