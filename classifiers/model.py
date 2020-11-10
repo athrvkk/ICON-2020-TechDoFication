@@ -95,13 +95,13 @@ def plot_curves(history):
 # ------------------------------------------------------ SAVE MODELS --------------------------------------------
 
 def save_model(model, name):
-    model.save("../models/DL/"+name+".h5")
+    model.save("../models/"+name+".h5")
     # serialize model to JSON
     model_json = model.to_json()
-    with open("../models/DL/"+name+".json", "w") as json_file:
+    with open("../models/"+name+".json", "w") as json_file:
         json_file.write(model_json)
     # serialize weights to HDF5
-    model.save_weights("../models/DL/"+name+"_weights.h5")
+    model.save_weights("../models/"+name+"_weights.h5")
 
     
 # ------------------------------------------------------ LOAD MODELS --------------------------------------------

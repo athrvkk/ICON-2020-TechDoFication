@@ -31,8 +31,28 @@ def get_stopwords(path):
         stopword_list.append(row)
     return stopword_list
         
-        
-        
+    
+    
+# ------------------------------------------ Clean Data ------------------------------------------ 
+
+def clean_text(text):
+    #Removing unprintable characters
+    text = ''.join(x for x in text if x.isprintable())
+
+    # Cleaning the urls
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+
+    # Cleaning the html elements
+    text = re.sub(r'<.*?>', '', text)
+
+    # Removing the punctuations
+    text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
+    
+    text = " ".join(word.lower() for word in text.split())
+    return text
+
+
+
 # ------------------------------------------ Preprocess Data ------------------------------------------
 
 def preprocess_data(stopword_list, text: str) -> str:
