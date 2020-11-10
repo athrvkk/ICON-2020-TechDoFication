@@ -112,6 +112,17 @@ def bow_vectorize(x_train, x_val, min_df):
         return bow_vectorizer, bow_x_train, bow_x_val
 
 
+
+# ---------------------------------- character-level Count Vectorizer --------------------------------
+
+def char_bow_vectorize(x_train, x_val, min_df):
+        char_bow_vectorizer = CountVectorizer(analyzer='char', ngram_range=(2,3))
+        char_bow_vectorizer.fit(x_train)
+        char_bow_x_train = char_bow_vectorizer.transform(x_train)
+        char_bow_x_val = char_bow_vectorizer.transform(x_val)
+        return char_bow_vectorizer, char_bow_x_train, char_bow_x_val
+    
+    
     
 # ------------------------------------- bi/trigram TF-IDF Vectorizer -----------------------------------
 
