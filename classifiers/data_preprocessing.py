@@ -11,6 +11,8 @@ from sklearn.preprocessing import LabelEncoder
 from nltk.util import ngrams
 from collections import Counter
 import unicodedata
+from gensim.corpora import Dictionary
+from gensim.models.ldamodel import LdaModel
 
 
 
@@ -264,6 +266,39 @@ def get_sentence_embedding(embedding_matrix, corpus, option='bow'):
         return text    
 
     
+# ----------------------------------------- Prepare Data for LDA input -----------------------------------------
+
+def prepare_LDA_input(corpus, LDA_model):
+    # Prepare input to LDA model
+    corpus = [clean_text(text).split() for text in corpus]
+    dict_corpus = Dictionary(corpus)
+    dict_corpus.filter_extremes(no_below=5, no_above=0.3, keep_n=None)
+    bow_corpus = [dict_corpus.doc2bow(c) for c in corpus]
+    
+    # Get topic-doc vector
+    LDA_input = []
+    for doc in bow_corpus:
+        LDA_input.append(LDA_model.get_document_topics(doc))
+    
+    # Add missing probabilities
+    for doc in LDA_input:
+        index = []
+        true_index = set([0,1,2,3])
+        for i in range(len(doc)):
+            index.append(doc[i][0])
+        new_index = true_index- set(index)
+        for j in new_index:
+            doc.extend([(j, 0.0)])
+        doc.sort() 
+        
+    # Create input matrix
+    LDA_doc = []
+    for doc in LDA_input:
+        LDA_doc.append(np.asarray([doc[0][1], doc[1][1], doc[2][1], doc[3][1]], dtype='float32'))
+    LDA_doc = np.array(LDA_doc)
+    return LDA_doc
+
+
 
 # ----------------------------------------- Get unigrams -----------------------------------------
 
