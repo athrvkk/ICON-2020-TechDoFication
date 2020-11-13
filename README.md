@@ -18,3 +18,5 @@ Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning
 |CNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>72.59<br>77.08<br>84.20<br>86.66</p>|<p>0.7024<br>0.7514<br>0.8312<br>0.8532</p>|
 |Bi-LSTM|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>80.00<br>83.12<br>87.30<br>89.31</p>|<p>0.7870<br>0.8215<br>0.8629<br>0.8842</p>|
 |BiLSTM-CNN|Domain specific embeddings (raw)|88.99|0.8807|
+|BiLSTM-Attention|Domain specific embeddings (raw)|88.14|0.8697|
+
