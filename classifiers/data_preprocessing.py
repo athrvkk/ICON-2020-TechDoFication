@@ -283,7 +283,7 @@ def prepare_LDA_input(corpus, LDA_model):
     # Add missing probabilities
     for doc in LDA_input:
         index = []
-        true_index = set([0,1,2,3])
+        true_index = set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
         for i in range(len(doc)):
             index.append(doc[i][0])
         new_index = true_index- set(index)
@@ -294,7 +294,9 @@ def prepare_LDA_input(corpus, LDA_model):
     # Create input matrix
     LDA_doc = []
     for doc in LDA_input:
-        LDA_doc.append(np.asarray([doc[0][1], doc[1][1], doc[2][1], doc[3][1]], dtype='float32'))
+        LDA_doc.append(np.asarray([doc[0][1], doc[1][1], doc[2][1], doc[3][1],
+                                   doc[4][1], doc[5][1], doc[6][1], doc[7][1],
+                                   doc[8][1], doc[9][1], doc[10][1], doc[11][1]], dtype='float32'))
     LDA_doc = np.array(LDA_doc)
     return LDA_doc
 
