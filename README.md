@@ -5,8 +5,8 @@ Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning
 
 |Model|Input Features|Validation Accuracy|Average F1-Score|
 |:-------|:--------|:-------|:--------|
-|Multinomial Naive Bayes|<p>BoW<br>char-BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF</p>|<p>86.21<br>80.66<br>78.49<br>65.02<br>77.48</p>|<p>0.8508<br>0.7938<br>0.7445<br>0.5657<br>0.7448</p>|
-|Linear SVC|<p>BoW<br>char-BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>Indic-fasttext embeddings(Bow)<br>Indic-fasttext embeddings(TF-IDF)<br>Domain-Specific Embeddings(Bow)<br>Domain-Specific Embeddings(TF-IDF)</p>|<p>83.99<br>84.52<br>86.69<br>86.03<br>86.93<br>77.75<br>77.35<br>84.52<br>84.94</p>|<p>0.8292<br>0.8310<br>0.8577<br>0.8506<br>0.8594<br>0.7539<br>0.7494<br>0.8304<br>0.8375</p>|
+|Multinomial Naive Bayes|<p>BoW<br>char-BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF</p>|<p>86.74<br>81.61<br>77.16<br>61.98<br>76.93</p>|<p>0.8532<br>0.8010<br>0.7251<br>0.5138<br>0.7329</p>|
+|Linear SVC|<p>BoW<br>char-BoW<br>TF-IDF<br>n-gram TF-IDF<br>character n-gram TF-IDF<br>Indic-fasttext embeddings(Bow)<br>Indic-fasttext embeddings(TF-IDF)<br>Domain-Specific Embeddings(Bow)<br>Domain-Specific Embeddings(TF-IDF)</p>|<p>85.76<br>86.19<br>88.17<br>87.27<br>88.78<br>79.20<br>77.67<br>85.44<br>85.42</p>|<p>0.8435<br>0.8467<br>0.8681<br>0.8614<br>0.8757<br>0.7691<br>0.7513<br>0.8419<br>0.8414</p>|
 
 
 
@@ -17,3 +17,6 @@ Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning
 |FFNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>59.39<br>71.50<br>76.42<br>76.11</p>|<p>0.4475<br>0.6929<br>0.7462<br>0.7454</p>|
 |CNN|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>72.59<br>77.08<br>84.20<br>86.66</p>|<p>0.7024<br>0.7514<br>0.8312<br>0.8532</p>|
 |Bi-LSTM|<p>fasttext embeddings<br>Indic-fasttext embeddings<br>Domain specific embeddings<br>Domain specific embeddings (raw)</p>|<p>80.00<br>83.12<br>87.30<br>89.31</p>|<p>0.7870<br>0.8215<br>0.8629<br>0.8842</p>|
+|BiLSTM-CNN|Domain specific embeddings (raw)|88.99|0.8807|
+|BiLSTM-Attention|Domain specific embeddings (raw)|88.14|0.8697|
+
