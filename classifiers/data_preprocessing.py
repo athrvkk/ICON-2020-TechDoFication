@@ -37,43 +37,49 @@ def get_stopwords(path):
     
 # ------------------------------------------ Clean Data ------------------------------------------ 
 
-def clean_text(text):
-    #Removing unprintable characters
-    text = ''.join(x for x in text if x.isprintable())
+# def clean_text(text):
+#     #Removing unprintable characters
+#     text = ''.join(x for x in text if x.isprintable())
 
-    # Cleaning the urls
-    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+#     # Cleaning the urls
+#     text = re.sub(r'https?://\S+|www\.\S+', '', text)
 
-    # Cleaning the html elements
-    text = re.sub(r'<.*?>', '', text)
+#     # Cleaning the html elements
+#     text = re.sub(r'<.*?>', '', text)
 
-    # Removing the punctuations
-    text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
+#     # Removing the punctuations
+#     text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
     
-    text = " ".join(word.lower() for word in text.split())
-    return text
+#     text = " ".join(word.lower() for word in text.split())
+#     return text
 
 
 
 # ------------------------------------------ Preprocess Data ------------------------------------------
 
-def preprocess_data(stopword_list, text: str) -> str:
+def expand_concatenations(self, word):
+
+
+    if not re.match('[a-zA-Z]+', word) or re.match('/d+',word):
+        for i in range(len(word)):
+            if not('DEVANAGARI ' in unicodedata.name(word[i])):
+                word = word[:i] if( len(word[i:]) < 2 and not word[i:].isnumeric()) else word[:i] + " " + word[i:]
+                break
+    else:
+        for i in range(len(word)):
+            if ('DEVANAGARI ' in unicodedata.name(word[i])):
+                word = word[i:] if( len(word[:i]) < 2 and not word[:i].isnumeric() ) else word[:i] + " " + word[i:]
+                break
+
+    return(word)
     
-    def expand_concatenations(word):            
-        if not re.match('[a-zA-Z]+', word) or re.match('\d+',word):
-            for i in range(len(word)):
-                if not('DEVANAGARI ' in unicodedata.name(word[i])):
-                    word = word[:i] if( len(word[i:]) < 2 and not word[i:].isnumeric()) else word[:i] + " " + word[i:]
-                    break
-        else:
-            for i in range(len(word)):
-                if ('DEVANAGARI ' in unicodedata.name(word[i])):
-                    word = word[i:] if( len(word[:i]) < 2 and not word[:i].isnumeric() ) else word[:i] + " " + word[i:]
-                    break
-        return(word)
-    
-    
+        
+def clean_text(self,text: str) -> str:
     try:
+        special_chars = r'''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+        stemmer = PorterStemmer()
+        lemmatizer = WordNetLemmatizer()
+
         if not(isinstance(text, str)): text = str(text)
 
         #Removing unprintable characters
@@ -86,34 +92,50 @@ def preprocess_data(stopword_list, text: str) -> str:
         text = re.sub(r'<.*?>', '', text)
 
         # Removing the punctuations
-        text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
+        text = re.sub('[!#?,.:";-@#$%^&*_~<>()/\-]', '', text)
 
 
         # Removing stop words
-        text = ' '.join([word for word in text.split() if word not in stopword_list])
+        text = ' '.join([word for word in text.split() if word not in self.stopword_list])
 
         # Expanding noisy concatenations (Eg: algorithmआणि  -> algorithm आणि ) 
-        text = ' '.join([expand_concatenations(word) for word in text.split()])
+        text = ' '.join([self.expand_concatenations(word) for word in text.split()])
 
+        return text
+
+    except ValueError as ve:
+        print('Error processing:\t',text)
+        return ''
+
+def preprocess_text(self,text: str) -> str:
+
+    try:
+        if not(isinstance(text, str)): text = str(text)
         preprocessed_text = ""
 
         for word in text.split(): 
             if (re.match('\d+', word)):
                 if(word.isnumeric()):
                     preprocessed_text = preprocessed_text + '#N' + " "
+                else:
+                    preprocessed_text = preprocessed_text + word.lower() + " "
+
             else:
                 if(re.match('[a-zA-Z]+', word)):
                     if not len(word) < 2:
-                        preprocessed_text = preprocessed_text + word.lower() + " "
+                        word = word.lower()
+#                             word = lemmatizer.lemmatize(word, pos='v')
+                        preprocessed_text = preprocessed_text + word + " "
+
                 else:
                     preprocessed_text = preprocessed_text + word + " "
 
-        return preprocessed_text.strip()
+        return preprocessed_text
 
     except ValueError as ve:
-        print('Error processing:\t',text)
+#                 print('Error processing:\t',text)
         return ''        
-    
+
     
     
 # ----------------------------------------- BOW Vectorizer -----------------------------------------
