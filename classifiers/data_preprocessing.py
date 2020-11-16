@@ -181,9 +181,9 @@ def char_tfidf_vectorize(x_train, x_val):
 
 # ----------------------------------------- tokenizing -----------------------------------------
 
-def tokenize_text(x_train, x_val):
+def tokenize_text(corpus, x_train, x_val):
     tokenizer = Tokenizer(oov_token='[OOV]')
-    tokenizer.fit_on_texts(x_train)
+    tokenizer.fit_on_texts(corpus)
     x_train_tokenzied = tokenizer.texts_to_sequences(x_train)
     x_val_tokenzied = tokenizer.texts_to_sequences(x_val)
     return tokenizer, x_train_tokenzied, x_val_tokenzied
