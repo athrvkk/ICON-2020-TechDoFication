@@ -242,7 +242,7 @@ def label_encoder(y_train, y_test):
 
 def get_embedding_matrix(embedding_path, vocab, embedding_dim):
     cnt = 0
-    vocab_words = set(vocab.keys())
+    vocab_words = set(vocab)
     embedding_matrix = np.zeros((len(vocab)+1, embedding_dim))
     embedding_file = open(embedding_path, 'r',encoding = 'utf8')
     for row in embedding_file:
