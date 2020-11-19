@@ -37,29 +37,27 @@ def get_stopwords(path):
     
 # ------------------------------------------ Clean Data ------------------------------------------ 
 
-# def clean_text(text):
-#     #Removing unprintable characters
-#     text = ''.join(x for x in text if x.isprintable())
+def clean_text(text):
+    # Removing unprintable characters
+    text = ''.join(x for x in text if x.isprintable())
 
-#     # Cleaning the urls
-#     text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    # Cleaning the urls
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
 
-#     # Cleaning the html elements
-#     text = re.sub(r'<.*?>', '', text)
+    # Cleaning the html elements
+    text = re.sub(r'<.*?>', '', text)
 
-#     # Removing the punctuations
-#     text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
+    # Removing the punctuations
+    text = re.sub('[!#?,.:";-@#$%^&*_~<>()-]', '', text)
     
-#     text = " ".join(word.lower() for word in text.split())
-#     return text
-
+    text = " ".join(word.lower() for word in text.split())
+    return text
+ 
 
 
 # ------------------------------------------ Preprocess Data ------------------------------------------
 
-def expand_concatenations(self, word):
-
-
+def expand_concatenations(word):
     if not re.match('[a-zA-Z]+', word) or re.match('/d+',word):
         for i in range(len(word)):
             if not('DEVANAGARI ' in unicodedata.name(word[i])):
@@ -73,13 +71,9 @@ def expand_concatenations(self, word):
 
     return(word)
     
-        
-def clean_text(self,text: str) -> str:
+       
+def preprocess_text(text: str) -> str:
     try:
-        special_chars = r'''!()-[]{};:'"\,<>./?@#$%^&*_~'''
-        stemmer = PorterStemmer()
-        lemmatizer = WordNetLemmatizer()
-
         if not(isinstance(text, str)): text = str(text)
 
         #Removing unprintable characters
@@ -96,17 +90,17 @@ def clean_text(self,text: str) -> str:
 
 
         # Removing stop words
-        text = ' '.join([word for word in text.split() if word not in self.stopword_list])
+        #text = ' '.join([word for word in text.split() if word not in stopword_list])
 
         # Expanding noisy concatenations (Eg: algorithmआणि  -> algorithm आणि ) 
-        text = ' '.join([self.expand_concatenations(word) for word in text.split()])
+        text = ' '.join([expand_concatenations(word) for word in text.split()])
 
         return text
 
     except ValueError as ve:
         print('Error processing:\t',text)
-        return ''
-
+        return 
+'''
 def preprocess_text(self,text: str) -> str:
 
     try:
@@ -136,7 +130,7 @@ def preprocess_text(self,text: str) -> str:
 #                 print('Error processing:\t',text)
         return ''        
 
-    
+'''    
     
 # ----------------------------------------- BOW Vectorizer -----------------------------------------
 
@@ -203,18 +197,19 @@ def char_tfidf_vectorize(x_train, x_val):
 
 # ----------------------------------------- tokenizing -----------------------------------------
 
-def tokenize_text(corpus, x_train, x_val):
+def tokenize_text(corpus, x_train, x_val=[], x_test=[]):
     tokenizer = Tokenizer(oov_token='[OOV]')
     tokenizer.fit_on_texts(corpus)
     x_train_tokenzied = tokenizer.texts_to_sequences(x_train)
     x_val_tokenzied = tokenizer.texts_to_sequences(x_val)
-    return tokenizer, x_train_tokenzied, x_val_tokenzied
+    x_test_tokenzied =  tokenizer.texts_to_sequences(x_test)
+    return tokenizer, x_train_tokenzied, x_val_tokenzied, x_test_tokenzied
     
     
     
 # ----------------------------------------- Pading and Truncating -----------------------------------------
     
-def pad_text(x_train_tokenzied, x_val_tokenzied, pad_len, padding_type='post', truncating_type='post'):    
+def pad_text(x_train_tokenzied, x_val_tokenzied=[], x_test_tokenzied=[], pad_len=100, padding_type='post', truncating_type='post'):    
     x_train_padded = np.asarray(pad_sequences(x_train_tokenzied, 
                                               padding=padding_type, 
                                               truncating=truncating_type, 
@@ -223,7 +218,11 @@ def pad_text(x_train_tokenzied, x_val_tokenzied, pad_len, padding_type='post', t
                                             padding=padding_type, 
                                             truncating=truncating_type, 
                                             maxlen=pad_len))
-    return x_train_padded, x_val_padded
+    x_test_padded = np.asarray(pad_sequences(x_test_tokenzied, 
+                                            padding=padding_type, 
+                                            truncating=truncating_type, 
+                                            maxlen=pad_len))
+    return x_train_padded, x_val_padded, x_test_padded
 
 
 
@@ -234,7 +233,7 @@ def label_encoder(y_train, y_test):
     le.fit(np.unique(y_train).tolist())
     y_train = le.transform(y_train)
     y_test = le.transform(y_test)
-    return y_train, y_test
+    return le, y_train, y_test
 
 
 
@@ -256,7 +255,17 @@ def get_embedding_matrix(embedding_path, vocab, embedding_dim):
     print(cnt)
     embedding_file.close()
     return embedding_matrix
+   
 
+
+def get_vocab(path):
+    file = open(path, "r", encoding="utf-8")
+    vocab = []
+    for word in file:
+        vocab.append(re.sub("\n", "", word))
+    file.close()
+    print(len(vocab))
+    return vocab
 
 
 # ----------------------------------------- Get Sentence Embeddings -----------------------------------------
