@@ -1,5 +1,5 @@
 # Technical-Domain-Identification
-Submission for TechDOfication-2020 Shared Task for ICON 2020. A Machine Learning system for automatic domain identification of a given text in specified language (Marathi).
+The repository contains team SPPU_AKAH's submission for ICON 2020 TechDOfication Shared Task (Subtask-1f). We propose a hybrid Attention Ensemble BiLSTM-CNN model for the task of coarse-grained automatic technical domain identification of short texts in the Marathi Language. Our system resulted in the best submission for the subtask-1f.
 
 ### Machine learning results:
 
