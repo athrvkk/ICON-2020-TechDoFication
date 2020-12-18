@@ -19,8 +19,7 @@
 |Physics (phy)|9,656|970|
 |**Total**|**41,997**|**3780**|
 
-
-### Performance comparison of different models on the validaiton data:
+# Performance comparison of different models on the validaiton data:
 
 |Model|Input Features|Validation Accuracy|Average F1-Score|
 |:-------|:--------|:-------|:--------|
@@ -34,8 +33,7 @@
 |Serial BiLSTM-CNN + Attention|Domain fasttext specific embeddings|88.23|0.8727|
 |**Enemble CNN-BiLSTM + Attention**|**Domain fasttext specific embeddings**|**89.57**|**0.8875**|
 
-
-### Detailed performance of the proposed model on the valdiaton data
+# Detailed performance of the proposed model on the valdiaton data
 
 |Metrics|bioche|com_tech|cse|phy|
 |:-------|:--------|:-------|:--------|:--------|
