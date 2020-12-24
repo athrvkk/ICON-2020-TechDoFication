@@ -42,9 +42,7 @@
 <img src="Architecture.png" height="480">
 
 
-# Results: 
-
-### Performance comparison of different models:
+# Performance comparison of different models:
 
 |Model|Input Features|Validation Accuracy|Average F1-Score|
 |:-------|:--------|:-------|:--------|
@@ -58,7 +56,7 @@
 |Serial BiLSTM-CNN + Attention|Domain fasttext specific embeddings|88.23|0.8727|
 |**Enemble CNN-BiLSTM + Attention**|**Domain fasttext specific embeddings**|**89.57**|**0.8875**|
 
-### Detailed performance of the proposed model on the valdiaton data
+# Performance of the proposed model on the valdiaton data:
 
 |Metrics|bioche|com_tech|cse|phy|
 |:-------|:--------|:-------|:--------|:--------|
