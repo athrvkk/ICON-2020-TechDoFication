@@ -1,5 +1,7 @@
 # Technical-Domain-Identification
-* The repository contains team SPPU_AKAH's submission for ICON 2020 TechDOfication Shared Task (Subtask-1f). We propose a hybrid Attention Ensemble BiLSTM-CNN model for the task of coarse-grained automatic technical domain identification of short texts in the Marathi Language. Our system resulted in the best submission for the subtask-1f.
+* The repository contains team SPPU_AKAH's submission for ICON 2020 TechDOfication Shared Task (Subtask-1f). We propose a hybrid Attention Ensemble BiLSTM-CNN model for the task of coarse-grained automatic technical domain identification of short texts in the Marathi Language.
+* Experimental results show that our **CNN-BiLSTM Attention Ensemble Model** outpeforms various baseline machine learning and deep learning models in the given task, giving the best validation accuracy of 89.57% and f1-score of 0.8875. 
+* Furthermore, the solution resulted in the **best system submission for the Subtask-1f**, giving a test accuracy of 64.26% and f1-score of 0.6157, transcending the performances of other teams as well as the baseline system given by the organizers of the shared task.
 * Link to ICON 2020 conference website (https://www.iitp.ac.in/~ai-nlp-ml/icon2020/index.html).
 * Link to the TechDOFication-2020 Shared Task website (https://ssmt.iiit.ac.in/techdofication.html).
 
@@ -63,3 +65,17 @@
 |Precision|0.9128|0.8831|0.9145|0.8931|
 |Recall|0.7976|0.9342|0.8949|0.8793|
 |F1-Score|0.8513|0.9079|0.9046|0.8862|
+
+
+# Performance Comparison with other teams:
+
+|Team|Accuracy|Precision|Recall|F1-Score|
+|:-------|:--------|:-------|:--------|:--------|
+|CUETNLP|0.2874|0.1894|0.1690|0.1678|
+|CONCORDIA_CIT|0.2522|0.2441|0.2346|0.2171|
+|Butterflies|0.4910|0.4956|0.4826|0.4443|
+|fineapples|0.5|0.5029|0.4906|0.4545|
+|NLP@CUET|0.6308|0.6598|0.6138|0.5980|
+|TechdoOne|0.6308|0.6337|0.6185|0.5989|
+|Organizer’s System|0.6414|0.6576|**0.6297**|0.6141|
+|**SPPU_AKAH**|**0.6426**|**0.6729**|0.6244|**0.6157**|
