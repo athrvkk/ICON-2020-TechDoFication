@@ -1,9 +1,9 @@
 # Technical-Domain-Identification
-* The repository contains team SPPU_AKAH's submission for ICON 2020 TechDOfication Shared Task (Subtask-1f). We propose a hybrid Attention Ensemble BiLSTM-CNN model for the task of coarse-grained automatic technical domain identification of short texts in the Marathi Language.
-* Experimental results show that our **CNN-BiLSTM Attention Ensemble Model** outpeforms various baseline machine learning and deep learning models in the given task, giving the best validation accuracy of 89.57% and f1-score of 0.8875. 
+* The repository contains team SPPU_AKAH's submission for the ICON 2020 TechDOfication Shared Task (Subtask-1f). We propose a hybrid Attention Ensemble BiLSTM-CNN model for the task of coarse-grained automatic technical domain identification of short texts in the Marathi Language.
+* Experimental results show that our **Hybrid CNN-BiLSTM Attention Ensemble Model** outpeforms various baseline machine learning and deep learning models in the given task, giving the best validation accuracy of 89.57% and f1-score of 0.8875. 
 * Furthermore, the solution resulted in the **best system submission for the Subtask-1f**, giving a test accuracy of 64.26% and f1-score of 0.6157, transcending the performances of other teams as well as the baseline system given by the organizers of the shared task.
-* Link to ICON 2020 conference website (https://www.iitp.ac.in/~ai-nlp-ml/icon2020/index.html).
-* Link to the TechDOFication-2020 Shared Task website (https://ssmt.iiit.ac.in/techdofication.html).
+* Link to ICON 2020 conference website [(click here)](https://www.iitp.ac.in/~ai-nlp-ml/icon2020/index.html).
+* Link to the TechDOFication-2020 Shared Task website [(click here)](https://ssmt.iiit.ac.in/techdofication.html).
 
 
 
